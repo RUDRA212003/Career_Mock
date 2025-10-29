@@ -10,20 +10,26 @@ import { toast } from "sonner";
 const Login = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [showTerms, setShowTerms] = useState(false); // ✅ modal state
+  const [showTerms, setShowTerms] = useState(false);
 
-  // ✅ Google Sign-In Only
+  // ✅ Sign in with Google
   const signInWithGoogle = async () => {
     try {
       setLoading(true);
+
+      // ✅ Use environment variable for dynamic host URL
+      const redirectUrl = `${process.env.NEXT_PUBLIC_HOST_URL}/dashboard`;
+      console.log("Redirecting to:", redirectUrl);
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: redirectUrl,
         },
       });
+
       if (error) throw error;
-      toast.success("Signed in successfully!");
+      toast.success("Redirecting to Google sign-in...");
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
       toast.error(error.message || "Google Sign-In failed");
@@ -50,10 +56,17 @@ const Login = () => {
       <div className="bg-white shadow-xl rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-6 w-full max-w-md text-center animate-fadeIn">
         {/* Illustration */}
         <div className="relative w-[280px] sm:w-[350px] h-[200px] sm:h-[250px] mb-4">
-          <Image src="/login.png" alt="Login Illustration" fill className="object-contain" />
+          <Image
+            src="/login.png"
+            alt="Login Illustration"
+            fill
+            className="object-contain"
+          />
         </div>
 
-        <h2 className="text-3xl font-bold text-gray-900">Welcome to Career Mock</h2>
+        <h2 className="text-3xl font-bold text-gray-900">
+          Welcome to Career Mock
+        </h2>
         <p className="text-gray-500 text-sm sm:text-base">
           Sign in with your Google account to continue
         </p>
@@ -99,47 +112,30 @@ const Login = () => {
 
             <div className="text-gray-700 text-sm space-y-4 max-h-[60vh] overflow-y-auto pr-2">
               <p>
-                Welcome to <strong>Career Mock</strong>. By using our platform, you agree
-                to the following terms and privacy practices.
+                Welcome to <strong>Career Mock</strong>. By using our platform,
+                you agree to the following terms and privacy practices.
               </p>
-
               <p>
                 We value your privacy and security. Our login system is fully
                 integrated with <strong>Supabase Authentication</strong>, a
                 trusted platform that follows industry-standard security
-                practices. Your personal information is <strong>never sold,
-                shared, or misused</strong> in any way.
+                practices. Your personal information is{" "}
+                <strong>never sold, shared, or misused</strong> in any way.
               </p>
-
               <p>
-                During authentication, we only access basic profile details
-                such as your <strong>name, email address, and profile picture</strong>.
-                This data is used strictly for identification and
-                personalization within our platform—for example, displaying
-                your name and image in your interview dashboard.
+                During authentication, we only access basic profile details such
+                as your <strong>name, email address, and profile picture</strong>.
+                This data is used strictly for identification and personalization
+                within our platform.
               </p>
-
               <p>
-                We do <strong>not</strong> send spam messages, promotional
-                emails, or any unsolicited communications. Your email address
-                will not be used for marketing or shared with any third party.
+                We do <strong>not</strong> send spam or promotional emails. Your
+                data is used solely for login and identification.
               </p>
-
               <p>
-                We take appropriate measures to ensure that your data is
-                secure and protected. Our systems follow standard encryption
-                protocols and do not store sensitive information such as
-                passwords in plain text.
+                By signing in, you acknowledge that Career Mock handles your
+                data securely and ethically.
               </p>
-
-              <p>
-                By signing in, you acknowledge that Career Mock does not engage
-                in any illegal, unethical, or spam-related activities, and your
-                information is handled solely for providing a secure and
-                professional mock interview experience.
-              </p>
-
-              
             </div>
 
             <div className="mt-6 text-right">
